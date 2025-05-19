@@ -1,10 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import 'dotenv/config'
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix("api/afisha");
+
+  // Создаём экземпляр билдера Swagger-документации
+  const config = new DocumentBuilder()
+    .setTitle('API Films')
+    .setDescription('API documentation for Films project')
+    .setVersion('1.0')
+    .addTag('films')
+    .addServer('/api/afisha')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('/api/docs', app, document);
+
+  app.setGlobalPrefix('api/afisha');
   app.enableCors();
   await app.listen(3000);
 }
