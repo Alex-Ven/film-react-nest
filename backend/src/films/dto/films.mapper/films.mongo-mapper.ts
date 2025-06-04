@@ -1,10 +1,16 @@
-import { Film, Schedule } from '../entities/film.entity';
-import { FilmDto, ScheduleDto } from './films.dto';
+import {
+  Schedule as ScheduleEntity,
+  Film as FilmEntity,
+} from '../../entities/film.mongo-entity';
+import { FilmDto, ScheduleDto } from '../films.dto';
 
 // Маппер для расписания
-export const mapScheduleToDto = (schedule: Schedule): ScheduleDto => ({
+export const mapScheduleToDto = (schedule: ScheduleEntity): ScheduleDto => ({
   id: schedule.id,
-  daytime: schedule.daytime.toISOString(),
+  daytime:
+    schedule.daytime instanceof Date
+      ? schedule.daytime.toISOString()
+      : new Date(schedule.daytime).toISOString(), // если это строка
   hall: schedule.hall,
   rows: schedule.rows,
   seats: schedule.seats,
@@ -15,7 +21,8 @@ export const mapScheduleToDto = (schedule: Schedule): ScheduleDto => ({
 // Фабрика маппера для фильма
 export const getFilmMapperFn = () => {
   return (film: any): FilmDto => ({
-    id: film._id.toHexString(),
+    //id: film._id.toHexString(),
+    id: film.id,
     title: film.title,
     director: film.director,
     rating: film.rating,
@@ -28,7 +35,9 @@ export const getFilmMapperFn = () => {
   });
 };
 
-export const mapScheduleToEntity = (scheduleDto: ScheduleDto): Schedule => ({
+export const mapScheduleToEntity = (
+  scheduleDto: ScheduleDto,
+): ScheduleEntity => ({
   id: scheduleDto.id,
   daytime: new Date(scheduleDto.daytime),
   hall: scheduleDto.hall,
@@ -38,7 +47,9 @@ export const mapScheduleToEntity = (scheduleDto: ScheduleDto): Schedule => ({
   taken: scheduleDto.taken,
 });
 
-export const mapFilmDtoToEntity = (filmDto: FilmDto): Partial<Film> => ({
+export const mapFilmDtoToEntity = (
+  filmDto: Partial<FilmDto>,
+): Partial<FilmEntity> => ({
   id: filmDto.id,
   title: filmDto.title,
   director: filmDto.director,

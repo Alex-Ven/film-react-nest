@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 import * as path from 'node:path';
-import { MongooseModule } from '@nestjs/mongoose';
 import { FilmsModule } from './films/films.module';
 import { OrderModule } from './order/order.module';
+import { getDatabaseModule } from './config/databaseModule';
 
 @Module({
   imports: [
@@ -16,14 +16,8 @@ import { OrderModule } from './order/order.module';
       rootPath: path.resolve(__dirname, '..', 'public'),
       serveRoot: '/content/afisha',
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        uri: `${configService.get<string>('DATABASE_URL')}/${configService.get<string>('DATABASE_NAME')}`,
-      }),
-      inject: [ConfigService],
-    }),
-    FilmsModule,
+    getDatabaseModule(process.env.DATABASE_DRIVER),
+    FilmsModule.forRoot(process.env.DATABASE_DRIVER as 'postgres' | 'mongodb'),
     OrderModule,
   ],
   controllers: [],

@@ -1,17 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { FilmsRepository } from '../repository/films.repository';
+import { Inject, Injectable } from '@nestjs/common';
 import { FilmDto, ScheduleDto } from './dto/films.dto';
-import {
-  getFilmMapperFn,
-  mapFilmDtoToEntity,
-  mapScheduleToDto,
-} from './dto/films.mapper';
+import { FilmsRepository } from './repository/films.repository.interface';
+import { getFilmMapperFn } from './dto/films.mapper/films.mongo-mapper';
 
 @Injectable()
 export class FilmsService {
   private mapToDto = getFilmMapperFn();
 
-  constructor(private readonly filmsRepository: FilmsRepository) {}
+  constructor(
+    @Inject('FilmsRepository')
+    private readonly filmsRepository: FilmsRepository,
+  ) {}
 
   async getAllFilms(): Promise<{ total: number; items: FilmDto[] }> {
     const films = await this.filmsRepository.getAll();
@@ -26,16 +25,16 @@ export class FilmsService {
     if (!film) throw new Error('Фильм не найден');
     return this.mapToDto(film);
   }
+
   async getFilmSchedule(id: string): Promise<{ items: ScheduleDto[] }> {
     const schedule = await this.filmsRepository.getScheduleById(id);
     return {
-      items: schedule.map(mapScheduleToDto),
+      items: schedule,
     };
   }
 
   async createFilm(filmDto: FilmDto): Promise<FilmDto> {
-    const filmEntity = mapFilmDtoToEntity(filmDto);
-    const createdFilm = await this.filmsRepository.createFilm(filmEntity);
-    return this.mapToDto(createdFilm);
+    const filmEntity = await this.filmsRepository.createFilm(filmDto);
+    return this.mapToDto(filmEntity);
   }
 }

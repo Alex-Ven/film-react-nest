@@ -1,61 +1,35 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Schedule } from './schedule.entity';
 
-@Schema()
-export class Schedule {
-  @Prop({ required: true })
-  id: string;
-
-  @Prop({ required: true })
-  daytime: Date;
-
-  @Prop({ required: true })
-  hall: number;
-
-  @Prop({ required: true })
-  rows: number;
-
-  @Prop({ required: true })
-  seats: number;
-
-  @Prop({ required: true })
-  price: number;
-
-  @Prop({ type: [String], default: [] })
-  taken: string[];
-}
-
-@Schema()
+@Entity()
 export class Film {
-  @Prop({ required: true })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Prop({ default: 0 })
-  rating: number;
-
-  @Prop({ required: true })
-  director: string;
-
-  @Prop({ type: [String], default: [] })
-  tags: string[];
-
-  @Prop({ required: true })
-  image: string;
-
-  @Prop({ required: true })
-  cover: string;
-
-  @Prop({ required: true, unique: true })
+  @Column({ length: 255 })
   title: string;
 
-  @Prop({ required: true })
-  about: string;
-
-  @Prop({ required: true })
+  @Column('text')
   description: string;
 
-  @Prop({ type: [Schedule], _id: false })
+  @Column('text', { nullable: true })
+  about: string;
+
+  @Column('float8')
+  rating: number;
+
+  @Column()
+  director: string;
+
+  @Column('simple-array')
+  tags: string[];
+
+  @Column()
+  image: string;
+
+  @Column()
+  cover: string;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.film)
   schedule: Schedule[];
 }
-
-export const ScheduleSchema = SchemaFactory.createForClass(Schedule);
-export const FilmSchema = SchemaFactory.createForClass(Film);
