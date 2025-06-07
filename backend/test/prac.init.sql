@@ -26,13 +26,13 @@ create table public.schedules
     id       uuid default uuid_generate_v4() not null
         constraint "PK_7e33fc2ea755a5765e3564e66dd"
             primary key,
-    daytime  varchar                         not null,
+    daytime  timestamp without time zone     not null,
     hall     integer                         not null,
     rows     integer                         not null,
     seats    integer                         not null,
     price    double precision                not null,
-    taken    text                            not null,
-    "filmId" uuid
+    taken    text[]                          DEFAULT '{}',
+    filmId uuid REFERENCES films(id),
         constraint "FK_1c2f5e637713a429f4854024a76"
             references public.films
 );
