@@ -1,4 +1,3 @@
-// films.repository.interface.ts
 import { FilmDto, ScheduleDto } from '../dto/films.dto';
 
 export interface FilmsRepository {

@@ -44,7 +44,6 @@ export class FilmsTypeOrmRepository implements FilmsRepository {
   async createFilm(data: Partial<FilmDto>): Promise<FilmDto> {
     const film = this.filmRepository.create({
       ...data,
-      // убедимся, что schedule тоже создаётся
       schedule:
         data.schedule?.map((dto) =>
           this.scheduleRepository.create({ ...dto, film }),

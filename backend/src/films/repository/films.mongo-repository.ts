@@ -27,7 +27,7 @@ export class FilmsMongoRepository implements FilmsRepository {
   }
 
   async getScheduleById(id: string): Promise<ScheduleDto[]> {
-    const film = await this.filmModel.findOne({ id }).exec(); // Исправлено: findOne вместо findById
+    const film = await this.filmModel.findOne({ id }).exec();
     if (!film || !film.schedule || !Array.isArray(film.schedule)) {
       this.logger.warn(`Film or schedule not found for id: ${id}`);
       return [];

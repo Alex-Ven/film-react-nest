@@ -6,7 +6,6 @@ import 'dotenv/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Создаём экземпляр билдера Swagger-документации
   const config = new DocumentBuilder()
     .setTitle('API Films')
     .setDescription('API documentation for Films project')

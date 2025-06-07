@@ -4,13 +4,12 @@ import {
 } from '../../entities/film.mongo-entity';
 import { FilmDto, ScheduleDto } from '../films.dto';
 
-// Маппер для расписания
 export const mapScheduleToDto = (schedule: ScheduleEntity): ScheduleDto => ({
   id: schedule.id,
   daytime:
     schedule.daytime instanceof Date
       ? schedule.daytime.toISOString()
-      : new Date(schedule.daytime).toISOString(), // если это строка
+      : new Date(schedule.daytime).toISOString(),
   hall: schedule.hall,
   rows: schedule.rows,
   seats: schedule.seats,
@@ -18,10 +17,8 @@ export const mapScheduleToDto = (schedule: ScheduleEntity): ScheduleDto => ({
   taken: schedule.taken,
 });
 
-// Фабрика маппера для фильма
 export const getFilmMapperFn = () => {
   return (film: any): FilmDto => ({
-    //id: film._id?.toString(),
     id: film.id,
     title: film.title,
     director: film.director,

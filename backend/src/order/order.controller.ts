@@ -8,10 +8,14 @@ export class OrderController {
 
   @Post()
   async createOrder(@Body() dto: OrderDto) {
-    await this.orderService.createOrder(dto);
+    const order = await this.orderService.createOrder(dto);
+
     return {
-      message: 'Билеты успешно забронированы',
-      items: dto.tickets.map((t) => ({ ...t, id: `${t.row}:${t.seat}` })),
+      total: order.tickets.length,
+      items: order.tickets.map((ticket) => ({
+        ...ticket,
+        id: `${ticket.row}:${ticket.seat}`,
+      })),
     };
   }
 }

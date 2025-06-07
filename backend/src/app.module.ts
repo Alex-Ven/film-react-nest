@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 
 import * as path from 'node:path';
 import { FilmsModule } from './films/films.module';
-//import { OrderModule } from './order/order.module';
 import { DatabaseModule } from './config/databaseModule';
 import { OrderModule } from './order/order.module';
 
@@ -18,7 +17,7 @@ import { OrderModule } from './order/order.module';
       serveRoot: '/content/afisha',
       exclude: ['/api*'],
       serveStaticOptions: {
-        index: false, // Отключаем поиск index.html
+        index: false,
         redirect: false,
       },
     }),
@@ -28,7 +27,9 @@ import { OrderModule } from './order/order.module';
     process.env.DATABASE_DRIVER === 'mongodb'
       ? FilmsModule.forMongoDB()
       : FilmsModule.forPostgreSQL(),
-    OrderModule,
+    process.env.DATABASE_DRIVER === 'mongodb'
+      ? OrderModule.forMongoDB()
+      : OrderModule.forPostgreSQL(),
   ],
 })
 export class AppModule {}

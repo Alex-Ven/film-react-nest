@@ -1,44 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { TicketDto, OrderDto } from './dto/order.dto';
-import { Film } from '../films/entities/film.entity';
+import { Injectable, Inject } from '@nestjs/common';
+import { OrderDto } from './dto/order.dto';
+import { IOrderRepository } from './repository/order.repository.interface';
+import { Order } from './entities/order.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectModel(Film.name) private readonly filmModel: Model<Film>,
+    @Inject('IOrderRepository')
+    private readonly orderRepository: IOrderRepository,
   ) {}
 
-  async createOrder(orderDto: OrderDto): Promise<void> {
-    const { tickets } = orderDto;
+  async createOrder(orderDto: OrderDto): Promise<Order> {
+    const { email, phone, tickets } = orderDto;
 
     for (const ticket of tickets) {
-      await this.reserveTicket(ticket);
-    }
-  }
-
-  private async reserveTicket(ticket: TicketDto): Promise<void> {
-    const { film, session, row, seat } = ticket;
-    const takenSeatId = `${row}:${seat}`;
-
-    const filmDoc = await this.filmModel.findOne({ id: film }).exec();
-    if (!filmDoc) throw new Error(`Фильм ${film} не найден`);
-
-    const scheduleSession = filmDoc.schedule.find((s) => s.id === session);
-    if (!scheduleSession) throw new Error(`Сеанс ${session} не найден`);
-
-    if (scheduleSession.taken.includes(takenSeatId)) {
-      throw new Error(`Место ${takenSeatId} уже занято`);
+      await this.orderRepository.reserveTicket(ticket);
     }
 
-    scheduleSession.taken.push(takenSeatId);
-
-    await this.filmModel
-      .updateOne(
-        { id: film, 'schedule.id': session },
-        { $addToSet: { 'schedule.$.taken': takenSeatId } },
-      )
-      .exec();
+    return {
+      email,
+      phone,
+      tickets: tickets.map((t) => ({
+        ...t,
+        id: `${t.row}:${t.seat}`,
+      })),
+      createdAt: new Date(),
+    };
   }
 }

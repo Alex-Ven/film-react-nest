@@ -13,7 +13,7 @@ export class Schedule {
   id: string;
 
   @Column({ type: 'timestamp' })
-  daytime: Date; // лучше позже использовать TIMESTAMP
+  daytime: Date;
 
   @Column()
   hall: number;
