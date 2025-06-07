@@ -22,7 +22,7 @@ export class OrderService {
     const { film, session, row, seat } = ticket;
     const takenSeatId = `${row}:${seat}`;
 
-    const filmDoc = await this.filmModel.findById(film).exec();
+    const filmDoc = await this.filmModel.findOne({ id: film }).exec();
     if (!filmDoc) throw new Error(`Фильм ${film} не найден`);
 
     const scheduleSession = filmDoc.schedule.find((s) => s.id === session);
@@ -36,9 +36,8 @@ export class OrderService {
 
     await this.filmModel
       .updateOne(
-        { _id: filmDoc._id },
-        { $set: { 'schedule.$[s].taken': scheduleSession.taken } },
-        { arrayFilters: [{ 's.id': session }] },
+        { id: film, 'schedule.id': session },
+        { $addToSet: { 'schedule.$.taken': takenSeatId } },
       )
       .exec();
   }

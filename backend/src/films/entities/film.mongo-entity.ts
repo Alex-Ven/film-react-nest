@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class Schedule {
-  @Prop({ required: true })
+  @Prop({ required: true, type: String, unique: true })
   id: string;
 
   @Prop({ type: Date, required: true })
@@ -24,9 +24,9 @@ export class Schedule {
   taken: string[];
 }
 
-@Schema()
+@Schema({ _id: false })
 export class Film {
-  @Prop({ required: true })
+  @Prop({ required: true, type: String, unique: true })
   id: string;
 
   @Prop({ default: 0 })
@@ -53,7 +53,7 @@ export class Film {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ type: [Schedule], _id: false })
+  @Prop({ type: [Schedule], default: [] })
   schedule: Schedule[];
 }
 

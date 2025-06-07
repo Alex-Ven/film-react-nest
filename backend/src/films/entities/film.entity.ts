@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Schedule } from './schedule.entity';
 
-@Entity()
+@Entity('films')
 export class Film {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -31,5 +31,6 @@ export class Film {
   cover: string;
 
   @OneToMany(() => Schedule, (schedule) => schedule.film)
+  @JoinColumn({ name: 'filmId' })
   schedule: Schedule[];
 }

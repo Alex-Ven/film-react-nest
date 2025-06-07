@@ -21,7 +21,7 @@ export const mapScheduleToDto = (schedule: ScheduleEntity): ScheduleDto => ({
 // Фабрика маппера для фильма
 export const getFilmMapperFn = () => {
   return (film: any): FilmDto => ({
-    //id: film._id.toHexString(),
+    //id: film._id?.toString(),
     id: film.id,
     title: film.title,
     director: film.director,

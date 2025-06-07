@@ -1,0 +1,33 @@
+services:
+  backend:
+    build: .
+    container_name: film-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_DRIVER=postgres
+      - POSTGRES_HOST=prac-postgres  # Используем имя сервиса
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+    depends_on:
+      - prac-postgres
+    volumes:
+      - ./public:/app/public
+
+  prac-postgres:
+    image: postgres:16-alpine
+    container_name: prac-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:

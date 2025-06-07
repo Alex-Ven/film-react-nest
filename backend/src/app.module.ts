@@ -4,8 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 
 import * as path from 'node:path';
 import { FilmsModule } from './films/films.module';
+//import { OrderModule } from './order/order.module';
+import { DatabaseModule } from './config/databaseModule';
 import { OrderModule } from './order/order.module';
-import { getDatabaseModule } from './config/databaseModule';
 
 @Module({
   imports: [
@@ -13,13 +14,21 @@ import { getDatabaseModule } from './config/databaseModule';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, '..', 'public'),
+      rootPath: path.join(process.cwd(), 'public'),
       serveRoot: '/content/afisha',
+      exclude: ['/api*'],
+      serveStaticOptions: {
+        index: false, // Отключаем поиск index.html
+        redirect: false,
+      },
     }),
-    getDatabaseModule(process.env.DATABASE_DRIVER),
-    FilmsModule.forRoot(process.env.DATABASE_DRIVER as 'postgres' | 'mongodb'),
+    process.env.DATABASE_DRIVER === 'mongodb'
+      ? DatabaseModule.forMongoDB()
+      : DatabaseModule.forPostgreSQL(),
+    process.env.DATABASE_DRIVER === 'mongodb'
+      ? FilmsModule.forMongoDB()
+      : FilmsModule.forPostgreSQL(),
     OrderModule,
   ],
-  controllers: [],
 })
 export class AppModule {}

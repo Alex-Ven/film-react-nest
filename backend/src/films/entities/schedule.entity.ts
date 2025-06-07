@@ -7,12 +7,12 @@ import {
 } from 'typeorm';
 import { Film } from './film.entity';
 
-@Entity()
+@Entity('schedules')
 export class Schedule {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   daytime: Date; // лучше позже использовать TIMESTAMP
 
   @Column()
@@ -27,7 +27,7 @@ export class Schedule {
   @Column()
   price: number;
 
-  @Column({ default: '' })
+  @Column('text', { array: true, default: '{}' })
   taken: string[];
 
   @ManyToOne(() => Film, (film) => film.schedule)

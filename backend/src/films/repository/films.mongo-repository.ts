@@ -27,11 +27,12 @@ export class FilmsMongoRepository implements FilmsRepository {
   }
 
   async getScheduleById(id: string): Promise<ScheduleDto[]> {
-    const film = await this.filmModel.findById(id).exec();
-    if (!film) {
+    const film = await this.filmModel.findOne({ id }).exec(); // Исправлено: findOne вместо findById
+    if (!film || !film.schedule || !Array.isArray(film.schedule)) {
+      this.logger.warn(`Film or schedule not found for id: ${id}`);
       return [];
     }
-    return film?.schedule?.map(mapScheduleToDto) || [];
+    return film.schedule.map(mapScheduleToDto);
   }
 
   async createFilm(data: Partial<FilmDto>): Promise<FilmDto> {
