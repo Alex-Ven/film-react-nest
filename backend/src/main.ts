@@ -20,6 +20,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/afisha');
   app.enableCors();
-  await app.listen(3000);
+  app.listen(3000, '0.0.0.0', () => {
+    console.log('Сервер запущен на http://0.0.0.0:3000');
+  });
 }
 bootstrap();
