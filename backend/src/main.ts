@@ -12,20 +12,15 @@ async function bootstrap() {
     .setDescription('API documentation for Films project')
     .setVersion('1.0')
     .addTag('films')
-    .addServer('/api/afisha')
+    .addServer('/')
     .build();
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('/api/docs', app, document);
+  SwaggerModule.setup('docs', app, document);
 
-  app.setGlobalPrefix('api/afisha');
+  app.setGlobalPrefix('');
   app.enableCors({
-    origin: [
-      'http://afisha.justforstudy.nomorepartiessbs.ru',
-      'https://afisha.justforstudy.nomorepartiessbs.ru',
-      'http://api.afisha.justforstudy.nomorepartiessbs.ru', // Добавили API-поддомен
-      'https://api.afisha.justforstudy.nomorepartiessbs.ru',
-    ],
+    origin: ['http://afisha.justforstudy.nomorepartiessbs.ru'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
