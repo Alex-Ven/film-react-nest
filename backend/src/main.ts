@@ -20,7 +20,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('');
   app.enableCors({
-    origin: ['http://afisha.justforstudy.nomorepartiessbs.ru'],
+    origin: ['https://afisha.justforstudy.nomorepartiessbs.ru'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
