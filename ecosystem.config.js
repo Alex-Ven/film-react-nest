@@ -1,7 +1,6 @@
 require("dotenv").config();
 
-const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REPO, DEPLOY_BRANCH } =
-  process.env;
+const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REPO, DEPLOY_BRANCH } = process.env;
 
 module.exports = {
   apps: [
@@ -9,27 +8,29 @@ module.exports = {
       name: "backend",
       script: "dist/main.js",
       cwd: "./backend",
-      args: "",
       instances: 1,
       autorestart: true,
       watch: false,
       env: {
-        NODE_ENV: "production",
+        NODE_ENV: "development", // По умолчанию
         PORT: 3000,
       },
+      env_production: { // Явное определение production окружения
+        NODE_ENV: "production",
+        PORT: 3000
+      }
     },
     {
       name: "frontend",
-      script: "npm",
-      args: "run dev",
+      script: "npm run dev",
       cwd: "./frontend",
       interpreter: "none",
       instances: 1,
       autorestart: true,
       watch: false,
       env_production: {
-        NODE_ENV: "production",
-      },
+        NODE_ENV: "production"
+      }
     },
   ],
 
@@ -41,41 +42,40 @@ module.exports = {
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
       "pre-deploy-local": `
-        echo "Copying environment files..." &&
-        
-        echo "Copying backend.env..." &&
-        scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env &&
-        echo "Copying frontend.env..." &&
-        scp -v frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env
-`,
-      "pre-deploy": `scp ./*.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}`,
+        echo "=== Копирование .env файлов ===" &&
+        echo "Копируем backend.env..." &&
+        [ -f backend/.env ] && scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env || echo "Warning: backend/.env не найден" &&
+        echo "Копируем frontend.env..." &&
+        [ -f frontend/.env ] && scp frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env || echo "Warning: frontend/.env не найден"
+      `,
       "post-deploy": `
-        echo "Preparing environment..." &&
+        echo "=== Настройка окружения ===" &&
         mkdir -p ${DEPLOY_PATH}/source/backend ${DEPLOY_PATH}/source/frontend &&
-        [ -f ${DEPLOY_PATH}/shared/backend.env ] && cp ${DEPLOY_PATH}/shared/backend.env ${DEPLOY_PATH}/source/backend/.env || echo "Warning: backend.env not found" &&
-        [ -f ${DEPLOY_PATH}/shared/frontend.env ] && cp ${DEPLOY_PATH}/shared/frontend.env ${DEPLOY_PATH}/source/frontend/.env || echo "Warning: frontend.env not found" &&
-
-        echo "Updating code..." &&
-      
+        
+        echo "Копируем .env файлы..." &&
+        [ -f ${DEPLOY_PATH}/shared/backend.env ] && cp ${DEPLOY_PATH}/shared/backend.env ${DEPLOY_PATH}/source/backend/.env || echo "Warning: backend.env не найден" &&
+        [ -f ${DEPLOY_PATH}/shared/frontend.env ] && cp ${DEPLOY_PATH}/shared/frontend.env ${DEPLOY_PATH}/source/frontend/.env || echo "Warning: frontend.env не найден" &&
+        
+        echo "=== Обновление кода ===" &&
+        cd ${DEPLOY_PATH}/source &&
         git fetch --all &&
         git reset --hard ${DEPLOY_BRANCH} &&
-
-        echo "Installing dependencies..." &&
-        npm install --prefix backend --legacy-peer-deps &&
-        npm install --prefix frontend &&
-
-        echo "Building backend..." &&
+        
+        echo "=== Установка зависимостей ===" &&
+        npm ci --prefix backend --legacy-peer-deps &&
+        npm ci --prefix frontend &&
+        
+        echo "=== Сборка проекта ===" &&
         npm run build --prefix backend &&
-
-        echo "Restarting services..." &&
-        cd ${DEPLOY_PATH}/source &&
-        pm2 startOrRestart ecosystem.config.js --env production
-
-        echo "Deployment completed successfully!"
+        
+        echo "=== Перезапуск сервисов ===" &&
+        pm2 reload ecosystem.config.js --env production &&
+        
+        echo "=== Деплой завершен успешно! ==="
       `,
       env: {
-        NODE_ENV: "production",
-      },
-    },
-  },
+        NODE_ENV: "production"
+      }
+    }
+  }
 };
