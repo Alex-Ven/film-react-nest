@@ -40,9 +40,11 @@ module.exports = {
       "pre-deploy-local": `
         echo "Copying environment files..." &&
         mkdir -p backend/.env frontend/.env &&
-        [ -f backend/.env ] && scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env || echo "Warning: backend/.env not found" &&
-        [ -f frontend/.env ] && scp frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env || echo "Warning: frontend/.env not found"
-      `,
+        echo "Copying backend.env..." &&
+        scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env &&
+        echo "Copying frontend.env..." &&
+        scp frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env
+`,
       "post-deploy": `
         echo "Preparing environment..." &&
         mkdir -p ${DEPLOY_PATH}/source/backend ${DEPLOY_PATH}/source/frontend &&
