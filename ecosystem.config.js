@@ -39,7 +39,7 @@ module.exports = {
       path: DEPLOY_PATH,
       "pre-deploy-local": `
         echo "Copying environment files..." &&
-        mkdir -p backend/.env frontend/.env &&
+        
         echo "Copying backend.env..." &&
         scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env &&
         echo "Copying frontend.env..." &&
