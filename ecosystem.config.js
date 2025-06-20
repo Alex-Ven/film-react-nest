@@ -1,7 +1,12 @@
 require("dotenv").config();
 
-const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REPO, DEPLOY_BRANCH } =
-  process.env;
+const {
+  DEPLOY_USER = 'alexander',
+  DEPLOY_HOST = '84.201.146.49',
+  DEPLOY_PATH = '/home/alexander/film-react-nest',
+  DEPLOY_REPO = 'https://github.com/Alex-Ven/film-react-nest.git',
+  DEPLOY_BRANCH = 'origin/review',
+} = process.env;
 
 module.exports = {
   apps: [
