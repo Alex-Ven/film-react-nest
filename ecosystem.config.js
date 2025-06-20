@@ -4,8 +4,8 @@ const {
   DEPLOY_USER,
   DEPLOY_HOST,
   DEPLOY_PATH,
-  DEPLOY_REPO = "https://github.com/Alex-Ven/film-react-nest.git",
-  DEPLOY_BRANCH = "origin/review",
+  DEPLOY_REPO,
+  DEPLOY_BRANCH,
 } = process.env;
 
 module.exports = {
@@ -42,7 +42,7 @@ module.exports = {
       ref: DEPLOY_BRANCH,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      "pre-deploy": `
+      "pre-deploy-local": `
       echo "Copying .env to server..." &&
       scp .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/ &&
       scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env &&
@@ -52,16 +52,19 @@ module.exports = {
         cp ${DEPLOY_PATH}/shared/backend.env ${DEPLOY_PATH}/source/backend/.env &&
         cp ${DEPLOY_PATH}/shared/frontend.env ${DEPLOY_PATH}/source/frontend/.env &&
 
-        echo "Installing dependencies..." &&
+        echo "Updating code..." &&
         cd ${DEPLOY_PATH}/source &&
         git fetch --all &&
         git reset --hard ${DEPLOY_BRANCH} &&
 
-        echo "Building backend..." &&
+        echo "Installing dependencies..." &&
         npm install --prefix backend --legacy-peer-deps &&
+        npm install --prefix frontend &&
+
+        echo "Building backend..." &&
         npm run build --prefix backend &&
 
-        echo "Starting services..." &&
+        echo "Restarting services..." &&
         pm2 reload ecosystem.config.js --env production &&
 
         echo "Deployment completed successfully!"
