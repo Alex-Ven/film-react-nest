@@ -42,8 +42,22 @@ module.exports = {
       ref: DEPLOY_BRANCH,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      pre_deploy: `scp .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared`,
-      post_deploy: 'cd film-react-nest && git pull && cd backend && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production'
+      pre_deploy: `
+      echo "Copying .env to server..." &&
+      scp .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared`,
+      'post-deploy': `
+        echo "Starting deployment..." &&
+        cd ${DEPLOY_PATH}/source &&
+        git fetch --all &&
+        git reset --hard ${DEPLOY_BRANCH} &&
+        npm install --prefix backend --legacy-peer-deps &&
+        npm run build --prefix backend &&
+        pm2 reload ecosystem.config.js --env production &&
+        echo "Deployment completed successfully!"
+      `,
+      env: {
+        NODE_ENV: 'production'
+      }
     }
   }
 };
