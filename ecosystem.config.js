@@ -37,7 +37,7 @@ module.exports = {
       ref: DEPLOY_BRANCH,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      "pre-deploy": `
+      "pre-deploy-local": `
         echo "Copying environment files..." &&
         
         echo "Copying backend.env..." &&
@@ -45,6 +45,7 @@ module.exports = {
         echo "Copying frontend.env..." &&
         scp -v frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env
 `,
+      "pre-deploy": `scp ./*.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}`,
       "post-deploy": `
         echo "Preparing environment..." &&
         mkdir -p ${DEPLOY_PATH}/source/backend ${DEPLOY_PATH}/source/frontend &&
