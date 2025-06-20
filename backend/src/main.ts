@@ -25,6 +25,10 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
   });
+  app.use((req, res, next) => {
+    console.log('Incoming request', req.url, req.headers);
+    next();
+  });
   app.listen(3000, '0.0.0.0', () => {
     console.log('Сервер запущен на http://0.0.0.0:3000');
   });
