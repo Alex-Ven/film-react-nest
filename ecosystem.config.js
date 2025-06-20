@@ -37,7 +37,7 @@ module.exports = {
       ref: DEPLOY_BRANCH,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      "pre-deploy-local": `
+      "pre-deploy": `
         echo "Copying environment files..." &&
         
         echo "Copying backend.env..." &&
