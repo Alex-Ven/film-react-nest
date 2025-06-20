@@ -1,12 +1,7 @@
 require("dotenv").config();
 
-const {
-  DEPLOY_USER,
-  DEPLOY_HOST,
-  DEPLOY_PATH,
-  DEPLOY_REPO,
-  DEPLOY_BRANCH,
-} = process.env;
+const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REPO, DEPLOY_BRANCH } =
+  process.env;
 
 module.exports = {
   apps: [
@@ -43,14 +38,16 @@ module.exports = {
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
       "pre-deploy-local": `
-      echo "Copying .env to server..." &&
-      scp .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/ &&
-      scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env &&
-      scp frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env`,
+        echo "Copying environment files..." &&
+        mkdir -p backend/.env frontend/.env &&
+        [ -f backend/.env ] && scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env || echo "Warning: backend/.env not found" &&
+        [ -f frontend/.env ] && scp frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env || echo "Warning: frontend/.env not found"
+      `,
       "post-deploy": `
-        echo "Setting up environment..." &&
-        cp ${DEPLOY_PATH}/shared/backend.env ${DEPLOY_PATH}/source/backend/.env &&
-        cp ${DEPLOY_PATH}/shared/frontend.env ${DEPLOY_PATH}/source/frontend/.env &&
+        echo "Preparing environment..." &&
+        mkdir -p ${DEPLOY_PATH}/source/backend ${DEPLOY_PATH}/source/frontend &&
+        [ -f ${DEPLOY_PATH}/shared/backend.env ] && cp ${DEPLOY_PATH}/shared/backend.env ${DEPLOY_PATH}/source/backend/.env || echo "Warning: backend.env not found" &&
+        [ -f ${DEPLOY_PATH}/shared/frontend.env ] && cp ${DEPLOY_PATH}/shared/frontend.env ${DEPLOY_PATH}/source/frontend/.env || echo "Warning: frontend.env not found" &&
 
         echo "Updating code..." &&
         cd ${DEPLOY_PATH}/source &&
