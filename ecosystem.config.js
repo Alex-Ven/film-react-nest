@@ -12,17 +12,18 @@ module.exports = {
       autorestart: true,
       watch: false,
       env: {
-        NODE_ENV: "development", // По умолчанию
-        PORT: 3000,
+        NODE_ENV: "development",
+        PORT: 3000
       },
-      env_production: { // Явное определение production окружения
+      env_production: {
         NODE_ENV: "production",
         PORT: 3000
       }
     },
     {
       name: "frontend",
-      script: "npm run dev",
+      script: "npm",
+      args: "run preview",
       cwd: "./frontend",
       interpreter: "none",
       instances: 1,
@@ -31,7 +32,7 @@ module.exports = {
       env_production: {
         NODE_ENV: "production"
       }
-    },
+    }
   ],
 
   deploy: {
@@ -41,38 +42,40 @@ module.exports = {
       ref: DEPLOY_BRANCH,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      "pre-deploy-local": `
+
+      pre_deploy: `
         echo "=== Копирование .env файлов ===" &&
-        echo "Копируем backend.env..." &&
         [ -f backend/.env ] && scp backend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/backend.env || echo "Warning: backend/.env не найден" &&
-        echo "Копируем frontend.env..." &&
         [ -f frontend/.env ] && scp frontend/.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/shared/frontend.env || echo "Warning: frontend/.env не найден"
       `,
-      "post-deploy": `
+
+      post_deploy: `
         echo "=== Настройка окружения ===" &&
         mkdir -p ${DEPLOY_PATH}/source/backend ${DEPLOY_PATH}/source/frontend &&
         
         echo "Копируем .env файлы..." &&
         [ -f ${DEPLOY_PATH}/shared/backend.env ] && cp ${DEPLOY_PATH}/shared/backend.env ${DEPLOY_PATH}/source/backend/.env || echo "Warning: backend.env не найден" &&
         [ -f ${DEPLOY_PATH}/shared/frontend.env ] && cp ${DEPLOY_PATH}/shared/frontend.env ${DEPLOY_PATH}/source/frontend/.env || echo "Warning: frontend.env не найден" &&
-        
+
         echo "=== Обновление кода ===" &&
         cd ${DEPLOY_PATH}/source &&
         git fetch --all &&
         git reset --hard ${DEPLOY_BRANCH} &&
-        
+
         echo "=== Установка зависимостей ===" &&
-        npm ci --prefix backend --legacy-peer-deps &&
+        npm ci --prefix backend &&
         npm ci --prefix frontend &&
-        
+
         echo "=== Сборка проекта ===" &&
         npm run build --prefix backend &&
-        
+        npm run build --prefix frontend &&
+
         echo "=== Перезапуск сервисов ===" &&
-        pm2 reload ecosystem.config.js --env production &&
-        
+        pm2 startOrRestart ecosystem.config.js --env production &&
+
         echo "=== Деплой завершен успешно! ==="
       `,
+
       env: {
         NODE_ENV: "production"
       }
