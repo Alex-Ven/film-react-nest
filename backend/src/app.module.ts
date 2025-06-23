@@ -6,6 +6,7 @@ import * as path from 'node:path';
 import { FilmsModule } from './films/films.module';
 import { DatabaseModule } from './config/databaseModule';
 import { OrderModule } from './order/order.module';
+import { AppController } from './films/app.controller';
 
 @Module({
   imports: [
@@ -31,5 +32,6 @@ import { OrderModule } from './order/order.module';
       ? OrderModule.forMongoDB()
       : OrderModule.forPostgreSQL(),
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

@@ -11,4 +11,22 @@ export default defineConfig({
       }
     }
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000', // ваш бэкенд-сервер
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api/afisha'), // учитываем глобальный префикс
+        secure: false
+      },
+      '/content': { // если вам нужно проксировать статические файлы
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      }
+    }
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true
+  }
 })
