@@ -13,6 +13,8 @@ services:
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
       - MONGO_URI=${DATABASE_URL}/${DATABASE_NAME}
       - MONGO_HOST=mongo
+      - LOGGER_TYPE=${LOGGER_TYPE:-dev} # default to dev
+      - LOGS_DIR=/app/logs
     depends_on:
       prac-postgres:
         condition: service_healthy
@@ -20,7 +22,13 @@ services:
         condition: service_healthy
     volumes:
       - ./public:/app/public
+      - ./logs:/app/logs:rw # монтируем директорию с логами
       - /app/node_modules
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   prac-postgres:
     image: postgres:16-alpine

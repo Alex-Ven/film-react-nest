@@ -13,6 +13,12 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+# Создаем директорию для логов
+RUN mkdir -p /app/logs && chown 777 /app/logs
+
+# Переключаемся на непривилегированного пользователя
+#USER node
+
 EXPOSE 3000
 
 CMD ["npm", "run", "start:dev"]

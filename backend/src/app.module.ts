@@ -7,12 +7,14 @@ import { FilmsModule } from './films/films.module';
 import { DatabaseModule } from './config/databaseModule';
 import { OrderModule } from './order/order.module';
 import { AppController } from './films/app.controller';
+import { LoggerModule } from 'logger/logger.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    LoggerModule,
     ServeStaticModule.forRoot({
       rootPath: path.join(process.cwd(), 'public'),
       serveRoot: '/content/afisha',
