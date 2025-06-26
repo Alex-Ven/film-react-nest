@@ -21,6 +21,7 @@ services:
       mongo:
         condition: service_healthy
     volumes:
+      - .:/app
       - ./public:/app/public
       - ./logs:/app/logs:rw # монтируем директорию с логами
       - /app/node_modules

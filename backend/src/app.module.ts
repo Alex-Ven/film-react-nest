@@ -7,7 +7,7 @@ import { FilmsModule } from './films/films.module';
 import { DatabaseModule } from './config/databaseModule';
 import { OrderModule } from './order/order.module';
 import { AppController } from './films/app.controller';
-import { LoggerModule } from 'logger/logger.module';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [

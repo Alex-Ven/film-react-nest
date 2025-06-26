@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import 'dotenv/config';
-import { LoggerFactory } from 'logger/logger.factory';
-import { LoggerType } from 'logger/logger.types';
+import { LoggerFactory } from 'src/logger/logger.factory';
+import { LoggerType } from 'src/logger/logger.types';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

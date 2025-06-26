@@ -8,7 +8,7 @@ export class JsonLogger implements LoggerService {
 
   constructor(private readonly logsDir?: string) {
     if (logsDir) {
-      this.logFile = path.join(logsDir, 'app.log');
+      this.logFile = path.join(logsDir, 'app.json.log');
       this.ensureLogsDirectory();
     }
   }
@@ -27,7 +27,7 @@ export class JsonLogger implements LoggerService {
 
   private formatMessage(
     level: string,
-    message: any,
+    message: string,
     context?: string,
     stack?: string,
   ) {
@@ -43,27 +43,27 @@ export class JsonLogger implements LoggerService {
     return jsonMessage;
   }
 
-  log(message: any, context?: string) {
+  log(message: string, context?: string) {
     const formatted = this.formatMessage('log', message, context);
     console.log(formatted);
   }
 
-  error(message: any, trace?: string, context?: string) {
+  error(message: string, trace?: string, context?: string) {
     const formatted = this.formatMessage('error', message, context, trace);
     console.error(formatted);
   }
 
-  warn(message: any, context?: string) {
+  warn(message: string, context?: string) {
     const formatted = this.formatMessage('warn', message, context);
     console.warn(formatted);
   }
 
-  debug(message: any, context?: string) {
+  debug(message: string, context?: string) {
     const formatted = this.formatMessage('debug', message, context);
     console.debug(formatted);
   }
 
-  verbose(message: any, context?: string) {
+  verbose(message: string, context?: string) {
     const formatted = this.formatMessage('verbose', message, context);
     console.log(formatted);
   }

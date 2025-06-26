@@ -15,7 +15,7 @@ export class LoggerFactory {
         return new TskvLogger(logsDir);
       case 'dev':
       default:
-        return new DevLogger();
+        return new DevLogger(logsDir);
     }
   }
 }
