@@ -34,8 +34,8 @@ jobs:
       - name: Сборка backend
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./backend/Dockerfile
+          context: ./backend
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
@@ -45,7 +45,7 @@ jobs:
       - name: Сборка frontend
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./frontend
           file: ./frontend/Dockerfile
           platforms: linux/amd64
           push: true
