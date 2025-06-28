@@ -39,8 +39,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/film-backend:latest
-            ghcr.io/${{ github.actor }}/film-backend:${{ github.sha }}
+            ghcr.io/alex-ven/film-backend:latest
+            ghcr.io/alex-ven/film-backend:${{ github.sha }}
 
       - name: Сборка frontend
         uses: docker/build-push-action@v5
@@ -50,8 +50,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/film-frontend:latest
-            ghcr.io/${{ github.actor }}/film-frontend:${{ github.sha }}
+            ghcr.io/alex-ven/film-frontend:latest
+            ghcr.io/alex-ven/film-frontend:${{ github.sha }}
 
       - name: Сборка nginx
         uses: docker/build-push-action@v5
@@ -61,5 +61,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/film-nginx:latest
-            ghcr.io/${{ github.actor }}/film-nginx:${{ github.sha }}
+            ghcr.io/alex-ven/film-nginx:latest
+            ghcr.io/alex-ven/film-nginx:${{ github.sha }}
