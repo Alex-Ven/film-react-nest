@@ -1,0 +1,159 @@
+services:
+  backend:
+    image: ghcr.io/alex-ven/film-backend:latest
+    build:
+      context: ./backend
+    environment:
+      - DATABASE_DRIVER=${DATABASE_DRIVER}
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - LOGGER_TYPE=${LOGGER_TYPE}
+      - LOGS_DIR=${LOGS_DIR}
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      # mongo:
+        # condition: service_healthy
+    networks:
+      - app-network
+    profiles:
+      - "postgres"
+      - "mongo"
+
+  nginx:
+    image: ghcr.io/alex-ven/film-nginx:latest
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - frontend_dist:/usr/share/nginx/html
+      - ./backend/public:/app/public:ro
+    # depends_on:
+      # - frontend-build
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    profiles:
+      - "default"
+      - "postgres"
+      - "mongo"
+
+  # === DEV MODE ===
+  frontend-dev:
+    image: ghcr.io/alex-ven/film-frontend-dev:latest
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://host.docker.internal:3000/api/afisha
+      - VITE_CDN_URL=http://host.docker.internal:3000/content/afisha
+    networks:
+      - app-network
+    profiles:
+      - "frontend-dev"
+
+  # === BUILD MODE ===
+  frontend-build:
+    image: ghcr.io/alex-ven/film-frontend-build:latest
+    build:
+      context: ./frontend
+      target: builder
+    profiles:
+      - "frontend-build"
+
+  # === PREVIEW MODE ===
+  frontend-preview:
+    image: ghcr.io/alex-ven/film-frontend-preview:latest
+    build:
+      context: ./frontend
+      target: preview
+    ports:
+      - "4173:4173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    profiles:
+      - "frontend-preview"
+
+  # === PostgreSQL (профиль: postgres) ===
+  postgres:
+    image: postgres:16-alpine
+    container_name: film-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    networks:
+      - app-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - "postgres"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: film-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+    profiles:
+      - "postgres"
+
+  # === MongoDB (профиль: mongo) ===
+  mongo:
+    image: mongo:6.0
+    container_name: film-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ${DATABASE_NAME}
+    volumes:
+      - mongodata:/data/db
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - "mongo"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  pgadmin_data:
+  mongodata:
+  frontend_dist:

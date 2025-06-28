@@ -22,6 +22,7 @@ import { LoggerModule } from 'src/logger/logger.module';
       serveStaticOptions: {
         index: false,
         redirect: false,
+        fallthrough: false,
       },
     }),
     process.env.DATABASE_DRIVER === 'mongodb'

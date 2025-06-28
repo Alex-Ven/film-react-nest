@@ -37,7 +37,7 @@
 ### 1. Клонируйте репозиторий
 
 ```bash
-git clone https://github.com/Alex-Ven/film-react-nest.git
+git clone https://github.com/alex-ven/film-react-nest.git
 cd film-react-nest
 ```
 
@@ -77,7 +77,7 @@ docker-compose up -d
 
 > Это запустит:
 - `film-backend` — ваш NestJS-бэкенд
-- `prac-postgres` — PostgreSQL
+- `film-postgres` — PostgreSQL
 - `film-mongo` — MongoDB (если включена)
 
 ---
@@ -248,8 +248,8 @@ test/
 | Запуск через Docker | `docker-compose up -d` |
 | Остановка контейнеров | `docker-compose down` |
 | Логи бэкенда | `docker logs film-backend` |
-| Логи Postgres | `docker logs prac-postgres` |
-| Войти в БД | `docker exec -it prac-postgres psql -U prac -d prac` |
+| Логи Postgres | `docker logs film-postgres` |
+| Войти в БД | `docker exec -it film-postgres psql -U prac -d prac` |
 | Запустить Postman-тесты | `newman run films.postman.json` |
 | Посмотреть данные в MongoDB | `docker exec -it film-mongo mongosh afisha` |
 

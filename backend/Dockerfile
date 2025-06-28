@@ -1,22 +1,27 @@
-# backend/Dockerfile
+# --- Build Stage ---
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+COPY . .
+RUN npm run build
+
+# --- Production Stage ---
 FROM node:20-alpine
 
 WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/public ./public
 
-RUN apk add --no-cache --virtual .build-deps curl \
-    && curl -fsSL https://downloads.mongodb.com/compass/mongosh-2.0.1-linux-x64.tgz | tar -xz -C /usr/local/bin --strip-components=1 \
-    && apk del .build-deps
-
-COPY package*.json ./
-
-RUN npm install --legacy-peer-deps
-
-COPY . .
-
-# Создаем директорию для логов
-RUN mkdir -p /app/logs && chown 777 /app/logs
-
+# 🔁 Копируем необходимые src-файлы для TypeORM CLI
+COPY --from=builder /app/src/typeorm.config.ts ./src/typeorm.config.ts
+COPY --from=builder /app/src/migrations ./src/migrations
+COPY --from=builder /app/src/**/*.entity.ts ./src/
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["node", "dist/main"]

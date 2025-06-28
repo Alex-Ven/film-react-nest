@@ -17,7 +17,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node --transpile-only ./node_modules/typeorm/cli",
+    "migration:generate": "npm run typeorm -- migration:generate -d ./src/typeorm.config.ts -o ./src/migrations -n",
+    "migration:run": "npm run typeorm -- migration:run -d ./src/typeorm.config.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d ./src/typeorm.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.17",
@@ -35,7 +39,8 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
-    "typeorm": "^0.3.24"
+    "typeorm": "^0.3.25",
+    "typeorm-ts-node-commonjs": "^0.3.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
