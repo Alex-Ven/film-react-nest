@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "test-deploy" ]
 
+env:
+  REGISTRY: ghcr.io
+  REPO_OWNER: alex-ven
+
 jobs:
   build:
     runs-on: ubuntu-latest
