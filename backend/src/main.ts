@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import 'dotenv/config';
 import { LoggerFactory } from 'src/logger/logger.factory';
 import { LoggerType } from 'src/logger/logger.types';
@@ -20,17 +19,6 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
   });
-
-  const config = new DocumentBuilder()
-    .setTitle('API Films')
-    .setDescription('API documentation for Films project')
-    .setVersion('1.0')
-    .addTag('films')
-    .addServer('/api/afisha')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-
-  SwaggerModule.setup('/api/docs', app, document);
 
   app.setGlobalPrefix('api/afisha');
 
