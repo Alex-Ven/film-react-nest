@@ -2,6 +2,7 @@ services:
   # === Бэкенд (работает с обоими профилями) ===
   backend:
     image: ghcr.io/alex-ven/film-backend:latest
+    env_file: .env.production
     environment:
       - DATABASE_DRIVER=${DATABASE_DRIVER}
       - PORT=${PORT}
@@ -22,6 +23,13 @@ services:
       - "postgres"
       - "mongo"
 
+  frontend:
+    image: ghcr.io/alex-ven/film-frontend:latest
+    volumes:
+      - frontend_dist:/usr/share/nginx/html
+    networks:
+      - app-network   
+
       # === Nginx (общий для всех профилей) ===
   nginx:
     image: ghcr.io/alex-ven/film-nginx:latest
@@ -33,6 +41,7 @@ services:
       - ./backend/public:/app/public:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/logs:/var/log/nginx
+      - /var/www/certbot:/var/www/certbot
     depends_on:
       - backend
     networks:
