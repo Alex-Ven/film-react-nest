@@ -23,14 +23,14 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.setGlobalPrefix('api/afisha');
+  app.setGlobalPrefix('');
 
   app.useLogger(logger);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
-  logger.log(`Application is running on: ${await app.getUrl()}/api/afisha`);
+  logger.log(`Application is running on: ${await app.getUrl()}`);
   logger.log(`Using logger type: ${loggerType}`);
 }
 bootstrap();
