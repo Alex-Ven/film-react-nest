@@ -14,7 +14,6 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
-COPY --from=builder /app/public ./public
 
 # 🔁 Копируем необходимые src-файлы для TypeORM CLI
 COPY --from=builder /app/src/typeorm.config.ts ./src/typeorm.config.ts

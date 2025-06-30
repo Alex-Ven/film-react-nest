@@ -40,6 +40,7 @@ services:
       - frontend_dist:/usr/share/nginx/html
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/logs:/var/log/nginx
+      - ./backend/public:/app/public:ro
       - /var/www/certbot:/var/www/certbot
     depends_on:
       - backend
