@@ -38,7 +38,6 @@ services:
       - "443:443"
     volumes:
       - frontend_dist:/usr/share/nginx/html
-      - ./backend/public:/app/public:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/logs:/var/log/nginx
       - /var/www/certbot:/var/www/certbot
