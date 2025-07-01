@@ -41,6 +41,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/logs:/var/log/nginx
       - /var/www/certbot:/var/www/certbot
+      - ./backend/public:/app/public:ro 
     depends_on:
       - backend
     networks:
