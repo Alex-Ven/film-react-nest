@@ -42,7 +42,7 @@ services:
       - ./nginx/logs:/var/log/nginx
       - /var/www/certbot:/var/www/certbot
       - ./backend/public:/app/public:ro
-    - ./backend/public/content/afisha:/usr/share/nginx/html/content/afisha:ro  # Дублирующее монтирование для страховки
+      - ./backend/public/content/afisha:/usr/share/nginx/html/content/afisha:ro  # Дублирующее монтирование для страховки
     depends_on:
       - backend
     networks:
