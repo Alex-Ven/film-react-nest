@@ -21,6 +21,22 @@ jobs:
       - name: Checkout код
         uses: actions/checkout@v4
 
+      - name: Проверка наличия медиафайлов
+        run: |
+          MEDIA_DIR=backend/public/content/afisha
+          if [ ! -d "$MEDIA_DIR" ]; then
+            echo "❌ Папка $MEDIA_DIR не найдена!"
+            exit 1
+          fi
+
+          if [ -z "$(ls -A $MEDIA_DIR)" ]; then
+            echo "❌ Папка $MEDIA_DIR пустая!"
+            exit 1
+          else
+            echo "✅ В папке $MEDIA_DIR есть файлы:"
+            ls -la $MEDIA_DIR
+          fi
+
       - name: Установка Docker Buildx
         uses: docker/setup-buildx-action@v3
 
