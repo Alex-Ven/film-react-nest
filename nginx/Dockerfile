@@ -1,12 +1,15 @@
 FROM nginx:alpine
 
-# Очистим стандартный html
+# Очистка стандартного html
 RUN rm -rf /usr/share/nginx/html/*
 
-# Копируем медиа в нужную структуру
-COPY backend/public/content/afisha /app/public/content/afisha
+# Создаем нужную структуру
+RUN mkdir -p /app/public/content/afisha/
 
+# Копируем медиафайлы
+COPY backend/public/content/afisha /app/public/content/afisha/
+
+# Копируем конфиг
 COPY nginx/nginx.prod.conf /etc/nginx/conf.d/default.conf
-
 
 EXPOSE 80
