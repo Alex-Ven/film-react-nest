@@ -1,39 +1,33 @@
 # --- Base Stage ---
 FROM node:20-alpine AS base
-
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
 # --- Dev Stage ---
 FROM base AS dev
-
 COPY . .
 CMD ["npm", "run", "dev"]
 EXPOSE 5173
 
 # --- Build Stage ---
 FROM base AS builder
-
 COPY . .
 RUN npm run build
-EXPOSE 80
-
-# --- Preview Stage ---
-FROM base AS preview
-
-COPY . .
-RUN npm run build
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
-EXPOSE 4173
 
 # --- Final Stage ---
-FROM alpine:3.18
+FROM nginx:alpine  # ← Используем официальный образ nginx
 
 WORKDIR /usr/share/nginx/html
-COPY --from=builder /app/dist .
 
-# Добавляем пустую директорию для volume (будет перезаписана в compose)
-RUN mkdir -p /usr/share/nginx/html
+# Удаляем дефолтные файлы nginx
+RUN rm -rf /usr/share/nginx/html/*
 
-EXPOSE 80
+# Копируем собранные файлы
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Копируем кастомную конфигурацию nginx (если нужно)
+COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
+
+# Стандартная команда для nginx
+CMD ["nginx", "-g", "daemon off;"]

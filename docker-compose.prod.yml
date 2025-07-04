@@ -29,6 +29,7 @@ services:
       - frontend_dist:/usr/share/nginx/html
     networks:
       - app-network   
+    restart: unless-stopped
 
       # === Nginx (общий для всех профилей) ===
   nginx:
@@ -37,7 +38,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      # - frontend_dist:/usr/share/nginx/html
+      - frontend_dist:/usr/share/nginx/html
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/logs:/var/log/nginx
       - /var/www/certbot:/var/www/certbot
