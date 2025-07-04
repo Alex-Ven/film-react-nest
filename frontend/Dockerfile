@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # --- Final Stage ---
-FROM nginx:alpine  # ← Используем официальный образ nginx
+FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 
