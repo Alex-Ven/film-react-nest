@@ -72,7 +72,7 @@ services:
     image: mongo:6.0
     build:
       context: .
-      dockerfile: Dockerfile.mongo
+      dockerfile: ./Dockerfile.mongo
     environment:
       MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:
