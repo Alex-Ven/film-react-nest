@@ -73,8 +73,8 @@ services:
     environment:
       MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:
-      - mongodata:/data/db
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - mongodata:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
     networks:
