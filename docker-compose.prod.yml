@@ -70,9 +70,9 @@ services:
   # === MongoDB (только для профиля mongo) ===
   mongo:
     image: mongo:6.0
-    build:
-      context: .
-      dockerfile: ./Dockerfile.mongo
+    # build:
+      # context: .
+      # dockerfile: ./Dockerfile.mongo
     environment:
       MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:

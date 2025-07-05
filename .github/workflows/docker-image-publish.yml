@@ -80,3 +80,9 @@ jobs:
             ghcr.io/alex-ven/film-nginx:latest
             ghcr.io/alex-ven/film-nginx:${{ github.sha }}
       
+
+      - name: Prepare MongoDB init script
+        run: |
+       
+           docker cp ./docker-entrypoint-initdb.d/init-mongo.js film-react-nest-deploy-mongo-1:/tmp/init-mongo.js
+           docker exec -it film-react-nest-deploy-mongo-1 mongosh afisha --file /tmp/init-mongo.js
