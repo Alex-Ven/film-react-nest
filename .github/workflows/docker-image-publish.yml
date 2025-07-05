@@ -61,7 +61,7 @@ jobs:
       - name: Сборка frontend
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
+          context: .
           file: ./frontend/Dockerfile
           platforms: linux/amd64
           push: true
