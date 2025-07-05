@@ -80,18 +80,3 @@ jobs:
             ghcr.io/alex-ven/film-nginx:latest
             ghcr.io/alex-ven/film-nginx:${{ github.sha }}
       
-
-      - name: Prepare MongoDB init script
-        run: |
-       
-           # Создаем папку (если её нет)
-           mkdir -p ./docker-entrypoint-initdb.d
-    
-           # Копируем файл инициализации
-           cp ./docker-entrypoint-initdb.d/init-mongo.js ./docker-entrypoint-initdb.d/
-    
-           # Проверяем, что файл скопировался
-           ls -la ./docker-entrypoint-initdb.d/
-    
-           # Проверяем содержимое файла (опционально)
-           cat ./docker-entrypoint-initdb.d/init-mongo.js | head -n 5
