@@ -73,6 +73,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.mongo
+      command: /always-init.sh && docker-entrypoint.sh mongod
     environment:
       MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:
