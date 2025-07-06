@@ -87,7 +87,7 @@ postgres:
      ```
 
 4. **Администрирование**:
-   - PGAdmin доступен по адресу: `https://pgadmin.afisha.justforstudy.nomorepartiessbs.ru`
+   - PGAdmin доступен по адресу: `http://localhost:8080`
    - Данные для входа:
      ```
      Email: admin@example.com
@@ -135,7 +135,7 @@ docker compose -f docker-compose.prod.yml exec mongo mongosh afisha --eval "load
 ### Пересборка
 ```bash
 docker compose -f docker-compose.prod.yml down -v
-docker compose -f docker-compose.prod.yml up -d --build --force-recreate
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 ## 🔄 CI/CD Pipeline (GitHub Actions)
