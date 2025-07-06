@@ -70,14 +70,10 @@ services:
   # === MongoDB (только для профиля mongo) ===
   mongo:
     image: mongo:6.0
-    build:
-      context: .
-      dockerfile: Dockerfile.mongo
-      command: /always-init.sh && docker-entrypoint.sh mongod
     environment:
       MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:
-      # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - mongodata:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
