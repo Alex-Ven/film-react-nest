@@ -1,22 +1,12 @@
+# Глобальные настройки (добавьте этот раздел)
+x-env: &env
+  env_file: .env.production
+
 services:
-  # === Бэкенд (работает с обоими профилями) ===
+  # === Бэкенд ===
   backend:
     image: ghcr.io/alex-ven/film-backend:latest
-    env_file: .env.production
-    # environment:
-    #   - DATABASE_DRIVER=${DATABASE_DRIVER}
-    #   - PORT=${PORT}
-    #   - DATABASE_URL=${DATABASE_URL}
-    #   - DATABASE_NAME=${DATABASE_NAME}
-    #   - POSTGRES_HOST=${POSTGRES_HOST}
-    #   - POSTGRES_PORT=${POSTGRES_PORT}
-    #   - POSTGRES_USER=${POSTGRES_USER}
-    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    #   - POSTGRES_DATABASE=${POSTGRES_DATABASE}
-    #   - LOGGER_TYPE=${LOGGER_TYPE}
-    #   - LOGS_DIR=${LOGS_DIR}
-    # ports:
-    #   - "${PORT}:${PORT}"
+    <<: *env  # Наследуем настройки env
     networks:
       - app-network
     profiles:
@@ -25,15 +15,17 @@ services:
 
   frontend:
     image: ghcr.io/alex-ven/film-frontend:latest
+    <<: *env  # Наследуем настройки env
     volumes:
       - frontend_dist:/usr/share/nginx/html
     networks:
       - app-network   
     restart: unless-stopped
 
-      # === Nginx (общий для всех профилей) ===
+  # === Nginx ===
   nginx:
     image: ghcr.io/alex-ven/film-nginx:latest
+    <<: *env  # Наследуем настройки env
     ports:
       - "80:80"
       - "443:443"
@@ -42,7 +34,6 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/logs:/var/log/nginx
       - /var/www/certbot:/var/www/certbot
-      # - ./backend/public:/app/public:ro
     depends_on:
       - backend
     networks:
@@ -51,9 +42,10 @@ services:
       - "postgres"
       - "mongo"
 
-# === PostgreSQL (только для профиля postgres) ===
+  # === PostgreSQL ===
   postgres:
     image: postgres:16-alpine
+    <<: *env  # Наследуем настройки env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -67,9 +59,10 @@ services:
     profiles:
       - "postgres"
 
-  # === MongoDB (только для профиля mongo) ===
+  # === MongoDB ===
   mongo:
     image: mongo:6.0
+    <<: *env  # Наследуем настройки env
     environment:
       MONGO_INITDB_DATABASE: ${DATABASE_NAME}
     volumes:
@@ -82,9 +75,10 @@ services:
     profiles:
       - "mongo"
 
-# === PGAdmin (опционально, только для postgres) ===
+  # === PGAdmin ===
   pgadmin:
     image: dpage/pgadmin4
+    <<: *env  # Наследуем настройки env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
@@ -99,7 +93,6 @@ services:
     profiles:
       - "postgres"
 
-# Сети и тома
 networks:
   app-network:
     driver: bridge
@@ -109,4 +102,3 @@ volumes:
   pgadmin_data:
   mongodata:
   frontend_dist:
-

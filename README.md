@@ -12,7 +12,7 @@
 - Настроены security headers в Nginx
 - Поддомены:
   - `api.afisha.justforstudy.nomorepartiessbs.ru` - API бэкенда
-  - `pgadmin.afisha.justforstudy.nomorepartiessbs.ru` - Администрирование PostgreSQL
+  - `localhost:8080` - Администрирование PostgreSQL
 
 ## �ъ️ Архитектура
 - **Frontend**: Vite + React (TypeScript)
@@ -176,7 +176,7 @@ server {
     }
 
     location /api {
-        proxy_pass http://backend:3000;
+        proxy_pass http://backend;
     }
 }
 ```
@@ -241,7 +241,8 @@ SELECT pg_size_pretty(pg_database_size('prac'));
 
 2. **Запуск в продакшн**:
    ```bash
-   docker compose -f docker-compose.prod.yml --profile postgres up -d
+   docker compose --env-file .env.production -f docker-compose.prod.yml --profile postgres up -d --build
+
    ```
 
 3. **Проверка**:
