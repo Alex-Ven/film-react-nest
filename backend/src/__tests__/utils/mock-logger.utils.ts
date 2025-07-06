@@ -1,4 +1,3 @@
-// __tests__/utils/mock-logger.utils.ts
 import * as fs from 'fs';
 import { PathLike } from 'fs';
 
@@ -8,7 +7,7 @@ export const mockFs = () => {
     mkdirSync: jest
       .spyOn(fs, 'mkdirSync')
       .mockImplementation((path: PathLike) => {
-        return String(path); // или path.toString()
+        return String(path);
       }),
     writeFileSync: jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {}),
     appendFileSync: jest

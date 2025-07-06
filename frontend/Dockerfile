@@ -26,8 +26,5 @@ RUN rm -rf /usr/share/nginx/html/*
 # Копируем собранные файлы
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Копируем кастомную конфигурацию nginx (если нужно)
-# COPY ../nginx/nginx.prod.conf /etc/nginx/conf.d/default.conf
-
 # Стандартная команда для nginx
 CMD ["nginx", "-g", "daemon off;"]

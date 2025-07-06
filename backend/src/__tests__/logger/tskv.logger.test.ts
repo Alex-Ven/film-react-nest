@@ -1,4 +1,3 @@
-// __tests__/logger/tskv.logger.test.ts
 import { TskvLogger } from '../../logger/tskv.logger';
 import * as fs from 'fs';
 

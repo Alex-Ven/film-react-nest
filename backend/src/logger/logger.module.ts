@@ -1,4 +1,3 @@
-// src/logger/logger.module.ts
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerFactory } from './logger.factory';

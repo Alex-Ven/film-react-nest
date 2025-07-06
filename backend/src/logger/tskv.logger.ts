@@ -1,4 +1,3 @@
-// src/logger/tskv.logger.ts
 import { LoggerService, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -35,7 +34,6 @@ export class TskvLogger implements LoggerService {
   private formatEntry(fields: Record<string, string>): string {
     return Object.entries(fields)
       .map(([key, value]) => {
-        // Экранируем специальные символы в значениях
         const escapedValue = String(value)
           .replace(/\n/g, '\\n')
           .replace(/\t/g, '\\t')

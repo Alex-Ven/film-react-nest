@@ -1,4 +1,3 @@
-// __tests__/logger/json.logger.test.ts
 import { JsonLogger } from '../../logger/json.logger';
 import * as fs from 'fs';
 
@@ -75,7 +74,7 @@ describe('JsonLogger', () => {
   });
 
   it('должен работать без logsDir и не писать в файл', () => {
-    const logger = new JsonLogger(); // logsDir не указан
+    const logger = new JsonLogger();
 
     expect(() => logger.verbose('No directory provided')).not.toThrow();
 
@@ -84,7 +83,7 @@ describe('JsonLogger', () => {
   });
 
   it('должен создавать директорию, если она отсутствует', () => {
-    existsSyncSpy.mockReturnValue(false); // директории нет
+    existsSyncSpy.mockReturnValue(false);
 
     const logger = new JsonLogger('/tmp/new_logs');
     logger.log('First message');

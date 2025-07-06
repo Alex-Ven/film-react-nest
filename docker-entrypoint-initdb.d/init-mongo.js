@@ -1,4 +1,3 @@
-// docker-entrypoint-initdb.d/init.js
 printjson(
   db.films.insertMany([
     {

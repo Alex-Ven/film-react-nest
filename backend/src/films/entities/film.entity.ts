@@ -31,6 +31,5 @@ export class Film {
   cover: string;
 
   @OneToMany(() => Schedule, (schedule) => schedule.film)
-  //@JoinColumn({ name: 'filmId' })
   schedule: Schedule[];
 }

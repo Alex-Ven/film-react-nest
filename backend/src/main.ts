@@ -13,18 +13,6 @@ async function bootstrap() {
   const loggerType = (process.env.LOGGER_TYPE as LoggerType) || 'dev';
   const logger = loggerFactory.createLogger(loggerType);
 
-//   app.enableCors(
-//   //   {
-//   //   origin: [
-//   //     'https://afisha.justforstudy.nomorepartiessbs.ru',
-//   //     'http://localhost:5173' // для разработки
-//   //   ],
-//   //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-//   //   allowedHeaders: 'Content-Type,Authorization',
-//   //   credentials: true,
-//   // }
-// );
-
   app.setGlobalPrefix('');
 
   app.useLogger(logger);

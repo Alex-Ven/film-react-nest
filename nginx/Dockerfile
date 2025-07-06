@@ -1,6 +1,5 @@
 FROM nginx:alpine
 
-# Очистим стандартный html
 RUN rm -rf /usr/share/nginx/html/*
 
 # Создаем нужную структуру

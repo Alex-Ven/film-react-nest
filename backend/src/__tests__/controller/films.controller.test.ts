@@ -1,4 +1,3 @@
-// films.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilmsController } from '../../films/films.controller';
 import { FilmsService } from '../../films/films.service';

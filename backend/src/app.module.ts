@@ -15,16 +15,6 @@ import { LoggerModule } from 'src/logger/logger.module';
       isGlobal: true,
     }),
     LoggerModule,
-    // ServeStaticModule.forRoot({
-    //   rootPath: path.join(process.cwd(), 'public'),
-    //   serveRoot: '/content/afisha',
-    //   exclude: ['/api*'],
-    //   serveStaticOptions: {
-    //     index: false,
-    //     redirect: false,
-    //     fallthrough: false,
-    //   },
-    // }),
     process.env.DATABASE_DRIVER === 'mongodb'
       ? DatabaseModule.forMongoDB()
       : DatabaseModule.forPostgreSQL(),

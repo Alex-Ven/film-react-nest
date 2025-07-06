@@ -1,4 +1,3 @@
-// order.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrderController } from '../../order/order.controller';
 import { OrderService } from '../../order/order.service';
@@ -92,8 +91,7 @@ describe('OrderController', () => {
     it('should validate ticket DTO structure', async () => {
       const invalidTicket = {
         film: 'film1',
-        // missing session
-        row: 'not-a-number', // wrong type
+        row: 'not-a-number',
         seat: 5,
       } as any;
 
