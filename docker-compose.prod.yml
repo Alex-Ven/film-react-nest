@@ -6,7 +6,19 @@ services:
   # === Бэкенд ===
   backend:
     image: ghcr.io/alex-ven/film-backend:latest
-    <<: *env  # Наследуем настройки env
+    <<: *env
+    command: >
+      sh -c "
+        echo 'Waiting for PostgreSQL...' &&
+        until pg_isready -h postgres -p 5432 -U $$POSTGRES_USER; do 
+          echo 'PostgreSQL is unavailable - sleeping' &&
+          sleep 2;
+        done &&
+        echo 'PostgreSQL is up - running migrations...' &&
+        npm run migration:run &&
+        echo 'Starting application...' &&
+        npm run start:prod
+      "
     networks:
       - app-network
     profiles:
