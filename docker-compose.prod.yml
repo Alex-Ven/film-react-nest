@@ -1,0 +1,115 @@
+# Глобальные настройки
+x-env: &env
+  env_file: .env.production
+
+services:
+  # === Бэкенд ===
+  backend:
+    image: ghcr.io/alex-ven/film-backend:latest
+    <<: *env
+    command: >
+      sh -c "
+        echo 'Waiting for PostgreSQL...' &&
+        while ! nc -z postgres 5432; do
+        sleep 1
+        done &&
+        echo 'PostgreSQL is up - running migrations...' &&
+        npm run migration:run &&
+        echo 'Starting NestJS app...' &&
+        node dist/main
+      "
+    networks:
+      - app-network
+    profiles:
+      - "postgres"
+      - "mongo"
+
+  frontend:
+    image: ghcr.io/alex-ven/film-frontend:latest
+    <<: *env  # Наследуем настройки env
+    volumes:
+      - frontend_dist:/usr/share/nginx/html
+    networks:
+      - app-network   
+    restart: unless-stopped
+
+  # === Nginx ===
+  nginx:
+    image: ghcr.io/alex-ven/film-nginx:latest
+    <<: *env  # Наследуем настройки env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - frontend_dist:/usr/share/nginx/html
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./nginx/logs:/var/log/nginx
+      - /var/www/certbot:/var/www/certbot
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    profiles:
+      - "postgres"
+      - "mongo"
+
+  # === PostgreSQL ===
+  postgres:
+    image: postgres:16-alpine
+    <<: *env  # Наследуем настройки env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+    networks:
+      - app-network
+    profiles:
+      - "postgres"
+
+  # === MongoDB ===
+  mongo:
+    image: mongo:6.0
+    <<: *env  # Наследуем настройки env
+    environment:
+      MONGO_INITDB_DATABASE: ${DATABASE_NAME}
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+    networks:
+      - app-network
+    profiles:
+      - "mongo"
+
+  # === PGAdmin ===
+  pgadmin:
+    image: dpage/pgadmin4
+    <<: *env  # Наследуем настройки env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    profiles:
+      - "postgres"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  pgadmin_data:
+  mongodata:
+  frontend_dist:

@@ -1,19 +1,30 @@
 import { Module } from '@nestjs/common';
-import {ServeStaticModule} from "@nestjs/serve-static";
-import {ConfigModule} from "@nestjs/config";
-import * as path from "node:path";
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { ConfigModule } from '@nestjs/config';
 
-import {configProvider} from "./app.config.provider";
+import * as path from 'node:path';
+import { FilmsModule } from './films/films.module';
+import { DatabaseModule } from './config/databaseModule';
+import { OrderModule } from './order/order.module';
+import { AppController } from './films/app.controller';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
-	ConfigModule.forRoot({
-          isGlobal: true,
-          cache: true
-      }),
-      // @todo: Добавьте раздачу статических файлов из public
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    LoggerModule,
+    process.env.DATABASE_DRIVER === 'mongodb'
+      ? DatabaseModule.forMongoDB()
+      : DatabaseModule.forPostgreSQL(),
+    process.env.DATABASE_DRIVER === 'mongodb'
+      ? FilmsModule.forMongoDB()
+      : FilmsModule.forPostgreSQL(),
+    process.env.DATABASE_DRIVER === 'mongodb'
+      ? OrderModule.forMongoDB()
+      : OrderModule.forPostgreSQL(),
   ],
-  controllers: [],
-  providers: [configProvider],
+  controllers: [AppController],
 })
 export class AppModule {}

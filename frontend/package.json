@@ -39,7 +39,7 @@
     "sass": "^1.77.6",
     "storybook": "^8.1.11",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "vite": "^5.4.19"
   },
   "packageManager": "pnpm@8.10.2+sha1.e0b68270e89c817ff88b7be62466a2128c53af02"
 }

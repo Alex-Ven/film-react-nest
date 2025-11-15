@@ -1,0 +1,81 @@
+name: Build and Publish Docker Images to GHCR
+
+on:
+  push:
+    branches: [ "test-deploy" ]
+  pull_request:
+    branches: [ "test-deploy" ]
+
+env:
+  REGISTRY: ghcr.io
+  REPO_OWNER: alex-ven
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout код
+        uses: actions/checkout@v4
+
+      - name: Проверка наличия медиафайлов
+        run: |
+          MEDIA_DIR=backend/public/content/afisha
+          if [ ! -d "$MEDIA_DIR" ]; then
+            echo "❌ Папка $MEDIA_DIR не найдена!"
+            exit 1
+          fi
+
+          if [ -z "$(ls -A $MEDIA_DIR)" ]; then
+            echo "❌ Папка $MEDIA_DIR пустая!"
+            exit 1
+          else
+            echo "✅ В папке $MEDIA_DIR есть файлы:"
+            ls -la $MEDIA_DIR
+          fi
+
+      - name: Установка Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Логин в GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Сборка backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/alex-ven/film-backend:latest
+            ghcr.io/alex-ven/film-backend:${{ github.sha }}
+
+      - name: Сборка frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/alex-ven/film-frontend:latest
+            ghcr.io/alex-ven/film-frontend:${{ github.sha }}
+
+      - name: Сборка nginx
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./nginx/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/alex-ven/film-nginx:latest
+            ghcr.io/alex-ven/film-nginx:${{ github.sha }}

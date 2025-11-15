@@ -1,11 +1,26 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import 'dotenv/config'
+import 'dotenv/config';
+import { LoggerFactory } from 'src/logger/logger.factory';
+import { LoggerType } from 'src/logger/logger.types';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix("api/afisha");
-  app.enableCors();
-  await app.listen(3000);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+
+  const loggerFactory = app.get(LoggerFactory);
+  const loggerType = (process.env.LOGGER_TYPE as LoggerType) || 'dev';
+  const logger = loggerFactory.createLogger(loggerType);
+
+  app.setGlobalPrefix('');
+
+  app.useLogger(logger);
+
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+
+  logger.log(`Application is running on: ${await app.getUrl()}`);
+  logger.log(`Using logger type: ${loggerType}`);
 }
 bootstrap();
