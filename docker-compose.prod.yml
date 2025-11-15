@@ -10,14 +10,13 @@ services:
     command: >
       sh -c "
         echo 'Waiting for PostgreSQL...' &&
-        until pg_isready -h postgres -p 5432 -U $$POSTGRES_USER; do 
-          echo 'PostgreSQL is unavailable - sleeping' &&
-          sleep 2;
+        while ! nc -z postgres 5432; do
+        sleep 1
         done &&
         echo 'PostgreSQL is up - running migrations...' &&
         npm run migration:run &&
-        echo 'Starting application...' &&
-        npm run start:prod
+        echo 'Starting NestJS app...' &&
+        node dist/main
       "
     networks:
       - app-network
