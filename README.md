@@ -251,7 +251,33 @@ SELECT pg_size_pretty(pg_database_size('prac'));
    ```
 
 ## 📈 Дальнейшее развитие
+```
 - [ ] Автоматические тесты в CI
 - [ ] Мониторинг через Prometheus
 - [ ] Резервное копирование БД
 ```
+
+## Автор
+
+**Александр Венедюхин** — Fullstack / Frontend разработчик  
+[LinkedIn](https://linkedin.com/in/alexander-venedyukhin-1288abb2) • [GitHub](https://github.com/Alex-Ven) • [Telegram](https://t.me/alex_venedyukhin)
+
+---
+
+## Поддержать проект
+
+Понравился проект? → Нажми ⭐ **Star** репозиторию!  
+Есть идеи или замечания? → [Создать Issue](https://github.com/Alex-Ven/film-react-nest/issues/new)
+
+---
+
+### Технологии и стек
+
+**Frontend:** React 18, Vite, TypeScript, Axios, React Router, Zod  
+**Backend:** NestJS, TypeORM, PostgreSQL / MongoDB 
+**Инфраструктура:** Docker + docker-compose, Nginx, GitHub Actions  
+**Дополнительно:** JWT-авторизация, Swagger-документация, адаптивная вёрстка, чистая архитектура
+
+**Теги:** `fullstack`, `react`, `nestjs`, `typescript`, `postgresql`, `docker`, `docker-compose`, `jwt`, `portfolio`, `2025`
+
+
