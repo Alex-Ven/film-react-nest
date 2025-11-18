@@ -262,9 +262,6 @@ SELECT pg_size_pretty(pg_database_size('prac'));
 **Александр Венедюхин** — начинающий Fullstack / Frontend разработчик  
 [LinkedIn](https://linkedin.com/in/alexander-venedyukhin-1288abb2) • [GitHub](https://github.com/Alex-Ven) • [Telegram](https://t.me/alex_venedyukhin)
 
-> Ищу позицию **Junior Fullstack**, **Frontend** или **Backend Developer**  
-> Открыт к релокации и удалённой работе
-
 ---
 
 ## Поддержать проект
