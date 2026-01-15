@@ -35,9 +35,8 @@ services:
 
   # === Nginx ===
   nginx:
-    build: 
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/alex-ven/film-nginx:latest
+    <<: *env  # Наследуем настройки env
     ports:
       - "80:80"
       - "443:443"
