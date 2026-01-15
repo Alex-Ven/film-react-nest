@@ -2,9 +2,9 @@ name: Build and Publish Docker Images to GHCR
 
 on:
   push:
-    branches: [ "test-deploy" ]
+    branches: [ "test-deploy-dev" ]
   pull_request:
-    branches: [ "test-deploy" ]
+    branches: [ "test-deploy-dev" ]
 
 env:
   REGISTRY: ghcr.io
