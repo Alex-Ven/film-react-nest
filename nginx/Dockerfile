@@ -6,7 +6,7 @@ RUN rm -rf /usr/share/nginx/html/*
 RUN mkdir -p /app/public/content/afisha/
 
 # Копируем медиафайлы
-COPY media/afisha /app/public/content/afisha/
+COPY backend/public/content/afisha /app/public/content/afisha/
 
 # Копируем конфиг Nginx
 COPY nginx/nginx.prod.conf /etc/nginx/conf.d/default.conf
