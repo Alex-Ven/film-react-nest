@@ -4,14 +4,14 @@
 
 ## 🌐 Продакшн-домен
 Приложение доступно по HTTPS:  
-🔐 [https://afisha.justforstudy.nomorepartiessbs.ru](https://afisha.justforstudy.nomorepartiessbs.ru)
+🔐 [https://afishajustforstudy.ru](https://afishajustforstudy.ru)
 
 ### Особенности домена:
 - Автоматическое перенаправление HTTP → HTTPS
 - Сертификаты Let's Encrypt (автообновление)
 - Настроены security headers в Nginx
 - Поддомены:
-  - `api.afisha.justforstudy.nomorepartiessbs.ru` - API бэкенда
+  - `api.afishajustforstudy.ru` - API бэкенда
   - `localhost:8080` - Администрирование PostgreSQL
 
 ## �ъ️ Архитектура
@@ -165,10 +165,10 @@ docker compose -f docker-compose.prod.yml up -d --build
 ```nginx
 server {
     listen 443 ssl;
-    server_name afisha.justforstudy.nomorepartiessbs.ru;
+    server_name afishajustforstudy.ru;
 
-    ssl_certificate /etc/letsencrypt/live/afisha.justforstudy.nomorepartiessbs.ru/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/afisha.justforstudy.nomorepartiessbs.ru/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/afishajustforstudy.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/afishajustforstudy.ru/privkey.pem;
 
     location / {
         root /usr/share/nginx/html;
@@ -236,7 +236,7 @@ SELECT pg_size_pretty(pg_database_size('prac'));
 
 1. **Настройка домена**:
    ```bash
-   certbot --nginx -d afisha.justforstudy.nomorepartiessbs.ru
+   certbot --nginx -d afishajustforstudy.ru
    ```
 
 2. **Запуск в продакшн**:
@@ -247,7 +247,7 @@ SELECT pg_size_pretty(pg_database_size('prac'));
 
 3. **Проверка**:
    ```bash
-   curl -I https://afisha.justforstudy.nomorepartiessbs.ru
+   curl -I https://afishajustforstudy.ru
    ```
 
 ## 📈 Дальнейшее развитие
